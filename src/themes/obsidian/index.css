@@ -1,0 +1,219 @@
+[data-callout='note'] {
+  --rc-color-light: var(--callout-note-color-light, rgb(8, 109, 221));
+  --rc-color-dark: var(--callout-note-color-dark, rgb(2, 122, 255));
+}
+
+[data-callout='abstract'] {
+  --rc-color-light: var(--callout-abstract-color-light, rgb(0, 191, 188));
+  --rc-color-dark: var(--callout-abstract-color-dark, rgb(83, 223, 221));
+}
+
+[data-callout='summary'] {
+  --rc-color-light: var(--callout-summary-color-light, rgb(0, 191, 188));
+  --rc-color-dark: var(--callout-summary-color-dark, rgb(83, 223, 221));
+}
+
+[data-callout='tldr'] {
+  --rc-color-light: var(--callout-tldr-color-light, rgb(0, 191, 188));
+  --rc-color-dark: var(--callout-tldr-color-dark, rgb(83, 223, 221));
+}
+
+[data-callout='info'] {
+  --rc-color-light: var(--callout-info-color-light, rgb(8, 109, 221));
+  --rc-color-dark: var(--callout-info-color-dark, rgb(2, 122, 255));
+}
+
+[data-callout='todo'] {
+  --rc-color-light: var(--callout-todo-color-light, rgb(8, 109, 221));
+  --rc-color-dark: var(--callout-todo-color-dark, rgb(2, 122, 255));
+}
+
+[data-callout='tip'] {
+  --rc-color-light: var(--callout-tip-color-light, rgb(0, 191, 188));
+  --rc-color-dark: var(--callout-tip-color-dark, rgb(83, 223, 221));
+}
+
+[data-callout='hint'] {
+  --rc-color-light: var(--callout-hint-color-light, rgb(0, 191, 188));
+  --rc-color-dark: var(--callout-hint-color-dark, rgb(83, 223, 221));
+}
+
+[data-callout='important'] {
+  --rc-color-light: var(--callout-important-color-light, rgb(0, 191, 188));
+  --rc-color-dark: var(--callout-important-color-dark, rgb(83, 223, 221));
+}
+
+[data-callout='success'] {
+  --rc-color-light: var(--callout-success-color-light, rgb(8, 185, 78));
+  --rc-color-dark: var(--callout-success-color-dark, rgb(68, 207, 110));
+}
+
+[data-callout='check'] {
+  --rc-color-light: var(--callout-check-color-light, rgb(8, 185, 78));
+  --rc-color-dark: var(--callout-check-color-dark, rgb(68, 207, 110));
+}
+
+[data-callout='done'] {
+  --rc-color-light: var(--callout-done-color-light, rgb(8, 185, 78));
+  --rc-color-dark: var(--callout-done-color-dark, rgb(68, 207, 110));
+}
+
+[data-callout='question'] {
+  --rc-color-light: var(--callout-question-color-light, rgb(236, 117, 0));
+  --rc-color-dark: var(--callout-question-color-dark, rgb(233, 151, 63));
+}
+
+[data-callout='help'] {
+  --rc-color-light: var(--callout-help-color-light, rgb(236, 117, 0));
+  --rc-color-dark: var(--callout-help-color-dark, rgb(233, 151, 63));
+}
+
+[data-callout='faq'] {
+  --rc-color-light: var(--callout-faq-color-light, rgb(236, 117, 0));
+  --rc-color-dark: var(--callout-faq-color-dark, rgb(233, 151, 63));
+}
+
+[data-callout='warning'] {
+  --rc-color-light: var(--callout-warning-color-light, rgb(236, 117, 0));
+  --rc-color-dark: var(--callout-warning-color-dark, rgb(233, 151, 63));
+}
+
+[data-callout='attention'] {
+  --rc-color-light: var(--callout-attention-color-light, rgb(236, 117, 0));
+  --rc-color-dark: var(--callout-attention-color-dark, rgb(233, 151, 63));
+}
+
+[data-callout='caution'] {
+  --rc-color-light: var(--callout-caution-color-light, rgb(236, 117, 0));
+  --rc-color-dark: var(--callout-caution-color-dark, rgb(233, 151, 63));
+}
+
+[data-callout='failure'] {
+  --rc-color-light: var(--callout-failure-color-light, rgb(233, 49, 71));
+  --rc-color-dark: var(--callout-failure-color-dark, rgb(251, 70, 76));
+}
+
+[data-callout='missing'] {
+  --rc-color-light: var(--callout-missing-color-light, rgb(233, 49, 71));
+  --rc-color-dark: var(--callout-missing-color-dark, rgb(251, 70, 76));
+}
+
+[data-callout='fail'] {
+  --rc-color-light: var(--callout-fail-color-light, rgb(233, 49, 71));
+  --rc-color-dark: var(--callout-fail-color-dark, rgb(251, 70, 76));
+}
+
+[data-callout='danger'] {
+  --rc-color-light: var(--callout-danger-color-light, rgb(233, 49, 71));
+  --rc-color-dark: var(--callout-danger-color-dark, rgb(251, 70, 76));
+}
+
+[data-callout='error'] {
+  --rc-color-light: var(--callout-error-color-light, rgb(233, 49, 71));
+  --rc-color-dark: var(--callout-error-color-dark, rgb(251, 70, 76));
+}
+
+[data-callout='bug'] {
+  --rc-color-light: var(--callout-bug-color-light, rgb(233, 49, 71));
+  --rc-color-dark: var(--callout-bug-color-dark, rgb(251, 70, 76));
+}
+
+[data-callout='example'] {
+  --rc-color-light: var(--callout-example-color-light, rgb(120, 82, 238));
+  --rc-color-dark: var(--callout-example-color-dark, rgb(168, 130, 255));
+}
+
+[data-callout='quote'] {
+  --rc-color-light: var(--callout-quote-color-light, rgb(158, 158, 158));
+  --rc-color-dark: var(--callout-quote-color-dark, rgb(158, 158, 158));
+}
+
+[data-callout='cite'] {
+  --rc-color-light: var(--callout-cite-color-light, rgb(158, 158, 158));
+  --rc-color-dark: var(--callout-cite-color-dark, rgb(158, 158, 158));
+}
+
+.callout {
+  --rc-color-default: #888;
+
+  overflow: hidden;
+
+  width: 100%;
+  padding: 12px 12px 12px 24px;
+  border-radius: 4px;
+  margin: 1em 0;
+
+  line-height: 1.3;
+
+  mix-blend-mode: darken;
+  background-color: rgb(from var(--rc-color-light, var(--rc-color-default)) r g b / 0.1);
+}
+
+.dark .callout {
+  mix-blend-mode: lighten;
+  background-color: rgb(from var(--rc-color-dark, var(--rc-color-default)) r g b / 0.1);
+}
+
+.callout-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+
+  color: var(--rc-color-light, var(--rc-color-default));
+  font-size: inherit;
+}
+
+.dark .callout-title {
+  color: var(--rc-color-dark, var(--rc-color-default));
+}
+
+.callout-title::-webkit-details-marker {
+  display: none;
+}
+
+.callout-title-icon {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.callout-title-text {
+  color: inherit;
+  font-weight: 600;
+}
+
+.callout-content {
+  overflow-x: auto;
+  padding: 0;
+  background-color: transparent;
+}
+
+.callout[data-collapsible='true'] .callout-title {
+  cursor: pointer;
+}
+
+.callout[data-collapsible='true'] .callout-fold-icon {
+  display: flex;
+  align-items: center;
+  padding-inline-end: 8px;
+}
+
+.callout[data-collapsible='true'] > .callout-title .callout-fold-icon svg {
+  transform: rotate(-90deg);
+  transition: transform 100ms ease-in-out;
+}
+
+.callout[data-collapsible='true'][open] > .callout-title .callout-fold-icon svg {
+  transform: none;
+}
+
+.callout-title-icon::after,
+.callout-fold-icon::after {
+  content: '\200B';
+}
+
+.callout-title-icon svg,
+.callout-fold-icon svg {
+  width: 18px;
+  height: 18px;
+}

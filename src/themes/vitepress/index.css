@@ -1,0 +1,101 @@
+[data-callout='note'] {
+  --rc-color-light: var(--callout-note-color-light, rgb(142, 150, 170));
+  --rc-color-dark: var(--callout-note-color-dark, rgb(101, 117, 133));
+}
+
+[data-callout='tip'] {
+  --rc-color-light: var(--callout-tip-color-light, rgb(100, 108, 255));
+  --rc-color-dark: var(--callout-tip-color-dark, rgb(100, 108, 255));
+}
+
+[data-callout='important'] {
+  --rc-color-light: var(--callout-important-color-light, rgb(159, 122, 234));
+  --rc-color-dark: var(--callout-important-color-dark, rgb(159, 122, 234));
+}
+
+[data-callout='warning'] {
+  --rc-color-light: var(--callout-warning-color-light, rgb(234, 179, 8));
+  --rc-color-dark: var(--callout-warning-color-dark, rgb(234, 179, 8));
+}
+
+[data-callout='caution'] {
+  --rc-color-light: var(--callout-caution-color-light, rgb(244, 63, 94));
+  --rc-color-dark: var(--callout-caution-color-dark, rgb(244, 63, 94));
+}
+
+.callout {
+  --rc-color-default: #888;
+
+  width: 100%;
+  padding: 16px 16px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  margin: 16px 0;
+
+  background-color: rgb(from var(--rc-color-light, var(--rc-color-default)) r g b / 0.14);
+
+  line-height: 24px;
+  font-size: 14px;
+}
+
+.dark .callout {
+  background-color: rgb(from var(--rc-color-dark, var(--rc-color-default)) r g b / 0.16);
+}
+
+.callout-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+
+  font-size: inherit;
+}
+
+.callout-title::-webkit-details-marker {
+  display: none;
+}
+
+.callout-title-icon {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.callout-title-text {
+  font-weight: 600;
+}
+
+.callout-content p {
+  margin: 8px 0;
+}
+
+.callout[data-collapsible='true'] .callout-title {
+  cursor: pointer;
+  margin: 0 0 8px;
+}
+
+.callout[data-collapsible='true'] .callout-fold-icon {
+  display: flex;
+  align-items: center;
+  padding-inline-end: 8px;
+}
+
+.callout[data-collapsible='true'] > .callout-title .callout-fold-icon svg {
+  transform: rotate(-90deg);
+  transition: transform 100ms ease-in-out;
+}
+
+.callout[data-collapsible='true'][open] > .callout-title .callout-fold-icon svg {
+  transform: none;
+}
+
+.callout-title-icon::after,
+.callout-fold-icon::after {
+  content: '\200B';
+}
+
+.callout-title-icon svg,
+.callout-fold-icon svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.2;
+}

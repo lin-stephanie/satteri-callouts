@@ -1,0 +1,93 @@
+[data-callout='note'] {
+  --rc-color-light: var(--callout-note-color-light, #0969da);
+  --rc-color-dark: var(--callout-note-color-dark, #2f81f7);
+}
+
+[data-callout='tip'] {
+  --rc-color-light: var(--callout-tip-color-light, #1a7f37);
+  --rc-color-dark: var(--callout-tip-color-dark, #3fb950);
+}
+
+[data-callout='important'] {
+  --rc-color-light: var(--callout-important-color-light, #8250df);
+  --rc-color-dark: var(--callout-important-color-dark, #a371f7);
+}
+
+[data-callout='warning'] {
+  --rc-color-light: var(--callout-warning-color-light, #9a6700);
+  --rc-color-dark: var(--callout-warning-color-dark, #d29922);
+}
+
+[data-callout='caution'] {
+  --rc-color-light: var(--callout-caution-color-light, #d1242f);
+  --rc-color-dark: var(--callout-caution-color-dark, #d1242f);
+}
+
+.callout {
+  --rc-color-default: #888;
+
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-left: 0.25em solid var(--rc-color-light, var(--rc-color-default));
+  margin-bottom: 1rem;
+}
+
+.dark .callout {
+  border-left-color: var(--rc-color-dark, var(--rc-color-default));
+}
+
+.callout-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  color: var(--rc-color-light, var(--rc-color-default));
+  font-weight: 500;
+  line-height: 1;
+}
+
+.dark .callout-title {
+  color: var(--rc-color-dark, var(--rc-color-default));
+}
+
+.callout-title::-webkit-details-marker {
+  display: none;
+}
+
+.callout-title-icon svg {
+  overflow: visible !important;
+  display: inline-block;
+
+  vertical-align: text-bottom;
+}
+
+.callout-content > :first-child {
+  margin-top: 1rem;
+}
+
+.callout-content > :last-child {
+  margin-bottom: 0;
+}
+
+.callout[data-collapsible='true'] .callout-title {
+  cursor: pointer;
+}
+
+.callout[data-collapsible='true'] .callout-fold-icon {
+  display: flex;
+  align-items: center;
+  padding-inline-end: 8px;
+}
+
+.callout[data-collapsible='true'] > .callout-title .callout-fold-icon svg {
+  transform: rotate(-90deg);
+  transition: transform 100ms ease-in-out;
+}
+
+.callout[data-collapsible='true'][open] > .callout-title .callout-fold-icon svg {
+  transform: none;
+}
+
+.callout-fold-icon {
+  margin-left: -2px;
+}

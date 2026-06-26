@@ -1,0 +1,49 @@
+name: Release
+
+run-name: Release ${{ github.ref_name }}
+
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - name: Run install
+        run: pnpm i
+
+      - name: Run build
+        run: pnpm build
+
+      - name: Ensure npm 11.5.1 or later is installed
+        run: npm install -g npm@latest
+
+      - name: Publish to npm via OIDC (Trusted publishing)
+        run: npm publish --access=public
+
+      - name: Run release
+        run: npx changelogithub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
