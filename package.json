@@ -1,6 +1,6 @@
 {
   "name": "satteri-callouts",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Satteri plugin for processing and rendering blockquote-based callouts (admonitions/alerts).",
   "author": "Stephanie Lin",
   "license": "MIT",
