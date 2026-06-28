@@ -48,7 +48,7 @@ export function createIfNeeded(
 }
 
 /**
- * Converts aproperty keys of the object to lowercase.
+ * Converts property keys of the object to lowercase.
  */
 function convertKeysToLowercase<T>(
   object: Record<string, T>

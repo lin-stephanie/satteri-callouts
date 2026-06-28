@@ -1,59 +1,36 @@
-import rehypeMinifyWhitespace from 'rehype-minify-whitespace'
-import rehypeParse from 'rehype-parse'
-import rehypeStringify from 'rehype-stringify'
-import remarkParse from 'remark-parse'
-import remarkRehype from 'remark-rehype'
-import { readSync } from 'to-vfile'
-import { unified } from 'unified'
+import { readFileSync } from 'node:fs'
+
+import { fromHtml } from 'hast-util-from-html'
+import { minifyWhitespace } from 'hast-util-minify-whitespace'
+import { toHtml } from 'hast-util-to-html'
+import { markdownToHtml } from 'satteri'
 import { test, expect } from 'vitest'
 
-import rehypeCalloouts from '../src/index.js'
+import satteriCallouts from '../src/index.js'
 
 import type { UserOptions } from '../src/types.js'
 
 function run(name: string, options?: UserOptions, fromHtml = false) {
-  // handle input
-  let input: string
-  if (fromHtml) {
-    const fromHtmlProcessor = unified()
-      .use(rehypeParse, { fragment: true })
-      .use(rehypeMinifyWhitespace)
-      .use(rehypeCalloouts, options)
-      .use(rehypeStringify)
-
-    input = String(
-      fromHtmlProcessor.processSync(
-        readSync(`./test/fixtures/${name}/input.html`)
-      )
+  test(name, async () => {
+    const inputPath = `./test/fixtures/${name}/input.${fromHtml ? 'html' : 'md'}`
+    const input = readFileSync(inputPath, 'utf8')
+    const result = await markdownToHtml(input, {
+      hastPlugins: [satteriCallouts(options)],
+    })
+    const actual = normalizeHtml(result.html)
+    const expected = normalizeHtml(
+      readFileSync(`./test/fixtures/${name}/output.html`, 'utf8')
     )
-  } else {
-    const fromMarkdownProcessor = unified()
-      .use(remarkParse)
-      .use(remarkRehype)
-      .use(rehypeCalloouts, options)
-      .use(rehypeMinifyWhitespace)
-      .use(rehypeStringify)
 
-    input = String(
-      fromMarkdownProcessor.processSync(
-        readSync(`./test/fixtures/${name}/input.md`)
-      )
-    )
-  }
-
-  // handle output
-  const output = String(
-    unified()
-      .use(rehypeParse, { fragment: true })
-      .use(rehypeMinifyWhitespace)
-      .use(rehypeStringify)
-      .processSync(readSync(`./test/fixtures/${name}/output.html`))
-  )
-
-  // test
-  test(name, () => {
-    expect(input).toBe(output)
+    expect(actual).toBe(expected)
   })
+}
+
+function normalizeHtml(value: string): string {
+  const tree = fromHtml(value, { fragment: true })
+  minifyWhitespace(tree)
+
+  return toHtml(tree)
 }
 
 run('openOrClose')

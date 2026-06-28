@@ -25,6 +25,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: lts/*
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
@@ -37,11 +38,10 @@ jobs:
       - name: Run build
         run: pnpm build
 
-      - name: Ensure npm 11.5.1 or later is installed
-        run: npm install -g npm@latest
-
-      - name: Publish to npm via OIDC (Trusted publishing)
-        run: npm publish --access=public
+      - name: Run publish
+        run: npm publish --provenance --access=public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Run release
         run: npx changelogithub

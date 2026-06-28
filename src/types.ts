@@ -140,7 +140,7 @@ interface Options<CalloutConfig, TagsConfig, PropsConfig> {
   /**
    * Specifies your desired callout theme to automatically apply its default types.
    *
-   * Refer to the {@link https://github.com/lin-stephanie/rehype-callouts/tree/main/src/themes theme's source code} f
+   * Refer to the {@link https://github.com/lin-stephanie/satteri-callouts/tree/main/src/themes theme's source code} f
    * or more details. Available themes:
    * {@link https://github.com/orgs/community/discussions/16925 GitHub},
    * {@link https://help.obsidian.md/Editing+and+formatting/Callouts Obsidian},
