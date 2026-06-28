@@ -53,6 +53,10 @@ function satteriCallouts(options?: UserOptions): HastPluginDefinition {
     },
 
     raw(node: Readonly<Extract<HastNode, { type: 'raw' }>>) {
+      if (!node.value.includes('[!') || !/<blockquote\b/i.test(node.value)) {
+        return
+      }
+
       const value = transformHtmlFragment(node.value, config)
 
       if (value === node.value) return
