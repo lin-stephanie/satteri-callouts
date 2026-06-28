@@ -92,16 +92,20 @@ export function getConfig(
 
   if (userOptions) {
     const { theme, callouts, aliases } = userOptions
-    if (callouts) userOptions.callouts = convertKeysToLowercase(callouts)
-    if (aliases) userOptions.aliases = convertKeysToLowercase(aliases)
+    const normalizedCallouts = callouts
+      ? convertKeysToLowercase(callouts)
+      : undefined
+    const normalizedAliases = aliases
+      ? convertKeysToLowercase(aliases)
+      : undefined
 
     const initCallouts = theme ? themes[theme] : themes.obsidian
     const mergedCallouts = { ...initCallouts }
-    if (userOptions.callouts) {
-      for (const key of Object.keys(userOptions.callouts)) {
+    if (normalizedCallouts) {
+      for (const key of Object.keys(normalizedCallouts)) {
         mergedCallouts[key] = {
           ...initCallouts[key],
-          ...userOptions.callouts[key],
+          ...normalizedCallouts[key],
         }
       }
     }
@@ -109,7 +113,7 @@ export function getConfig(
     return {
       theme: userOptions.theme ?? defaultOptions.theme,
       callouts: mergedCallouts,
-      aliases: { ...defaultOptions.aliases, ...userOptions.aliases },
+      aliases: { ...defaultOptions.aliases, ...normalizedAliases },
       showIndicator: userOptions.showIndicator ?? defaultOptions.showIndicator,
       tags: {
         ...defaultOptions.tags,
