@@ -41,6 +41,7 @@ import type { RequiredOptions, UserOptions } from './types.js'
  */
 function satteriCallouts(options?: UserOptions): HastPluginDefinition {
   const config = getConfig(options)
+  const aliasMap = expandCallouts(config.callouts, config.aliases)
 
   return defineHastPlugin({
     name: 'satteri-callouts',
@@ -48,7 +49,7 @@ function satteriCallouts(options?: UserOptions): HastPluginDefinition {
     element: {
       filter: ['blockquote'],
       visit(node: Readonly<Element>) {
-        return transformBlockquote(node, config)
+        return transformBlockquote(node, config, aliasMap)
       },
     },
 
@@ -57,7 +58,7 @@ function satteriCallouts(options?: UserOptions): HastPluginDefinition {
         return
       }
 
-      const value = transformHtmlFragment(node.value, config)
+      const value = transformHtmlFragment(node.value, config, aliasMap)
 
       if (value === node.value) return
 
@@ -78,9 +79,10 @@ function satteriCallouts(options?: UserOptions): HastPluginDefinition {
  */
 function transformBlockquote(
   node: Readonly<Element>,
-  config: RequiredOptions
+  config: RequiredOptions,
+  aliasMap: Record<string, string>
 ): Element | undefined {
-  const { theme, callouts, aliases, showIndicator, tags, props } = config
+  const { theme, callouts, showIndicator, tags, props } = config
   const {
     nonCollapsibleContainerTagName,
     nonCollapsibleTitleTagName,
@@ -111,7 +113,6 @@ function transformBlockquote(
   const firstParagraphChild = firstParagraph.children[0]
   if (firstParagraphChild.type !== 'text') return
 
-  const aliasMap = expandCallouts(callouts, aliases)
   const match = calloutRegex.exec(firstParagraphChild.value)
   calloutRegex.lastIndex = 0
 
@@ -277,12 +278,16 @@ function transformBlockquote(
   )
 }
 
-function transformHtmlFragment(value: string, config: RequiredOptions): string {
+function transformHtmlFragment(
+  value: string,
+  config: RequiredOptions,
+  aliasMap: Record<string, string>
+): string {
   const tree: Root = fromHtml(value, { fragment: true })
   let changed = false
 
   const children = tree.children.map((child) => {
-    const result = transformHtmlNode(child, config)
+    const result = transformHtmlNode(child, config, aliasMap)
     changed ||= result.changed
 
     return result.node
@@ -293,27 +298,30 @@ function transformHtmlFragment(value: string, config: RequiredOptions): string {
 
 function transformHtmlNode(
   node: ElementContent,
-  config: RequiredOptions
+  config: RequiredOptions,
+  aliasMap: Record<string, string>
 ): { node: ElementContent; changed: boolean }
 function transformHtmlNode(
   node: RootContent,
-  config: RequiredOptions
+  config: RequiredOptions,
+  aliasMap: Record<string, string>
 ): { node: RootContent; changed: boolean }
 function transformHtmlNode(
   node: RootContent,
-  config: RequiredOptions
+  config: RequiredOptions,
+  aliasMap: Record<string, string>
 ): { node: RootContent; changed: boolean } {
   if (node.type !== 'element') return { node, changed: false }
 
   const transformed =
     node.tagName === 'blockquote'
-      ? transformBlockquote(node, config)
+      ? transformBlockquote(node, config, aliasMap)
       : undefined
   const base = transformed ?? node
   let changed = Boolean(transformed)
 
   const children = base.children.map((child) => {
-    const result = transformHtmlNode(child, config)
+    const result = transformHtmlNode(child, config, aliasMap)
     changed ||= result.changed
 
     return result.node

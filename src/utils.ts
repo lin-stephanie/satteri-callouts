@@ -138,12 +138,11 @@ export function expandCallouts(
 ): Record<string, string> {
   if (Object.keys(aliases).length === 0) return {}
 
-  const expandedCallouts = structuredClone(callouts)
   const aliasMap: Record<string, string> = {}
 
   for (const [key, aliasList] of Object.entries(aliases)) {
     const lowerKey = key.toLowerCase()
-    const originalCallout = expandedCallouts[lowerKey]
+    const originalCallout = callouts[lowerKey]
 
     if (originalCallout) {
       const processedAliases = new Set<string>()
