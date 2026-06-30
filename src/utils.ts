@@ -41,7 +41,7 @@ export const defaultClassNames = {
  */
 export function createIfNeeded(
   value: CreateProperties | Properties | null,
-  node: BlockquoteElement,
+  node: Readonly<BlockquoteElement>,
   type: string
 ) {
   return typeof value === 'function' ? value(node, type) : value
