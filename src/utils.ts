@@ -6,7 +6,7 @@ import { githubCallouts } from './themes/github/config.js'
 import { obsidianCallouts } from './themes/obsidian/config.js'
 import { vitepressCallouts } from './themes/vitepress/config.js'
 
-import type { ElementContent, Element, Text, Properties } from 'hast'
+import type { ElementContent, Element, Text, Properties, Root } from 'hast'
 import type {
   BlockquoteElement,
   CreateProperties,
@@ -303,6 +303,25 @@ export function getProperties(
 }
 
 /**
+ * Parses an SVG fragment from a string.
+ * Caches the parsed fragment for performance.
+ */
+const svgFragmentCache = new Map<string, Root>()
+function parseSvgFragment(value: string): Root {
+  const cached = svgFragmentCache.get(value)
+  if (cached) return structuredClone(cached)
+
+  const fragment = fromHtml(value, {
+    space: 'svg',
+    fragment: true,
+  })
+
+  svgFragmentCache.set(value, fragment)
+
+  return structuredClone(fragment)
+}
+
+/**
  * Fetches a callout's visual indicator.
  */
 export function getIndicator(
@@ -314,10 +333,7 @@ export function getIndicator(
   const indicator = callouts[type]?.indicator
   if (!indicator) return null
 
-  const indicatorElement = fromHtml(indicator, {
-    space: 'svg',
-    fragment: true,
-  })
+  const indicatorElement = parseSvgFragment(indicator)
 
   const properties = getProperties(props, defaultClassNames.titleIcon)
   properties['aria-hidden'] = 'true'
@@ -332,10 +348,7 @@ export function getFoldIcon(tag: string, props: Properties | null): Element {
   const icon =
     '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>'
 
-  const foldIconElement = fromHtml(icon, {
-    space: 'svg',
-    fragment: true,
-  })
+  const foldIconElement = parseSvgFragment(icon)
 
   const properties = getProperties(props, defaultClassNames.foldIcon)
   properties['aria-hidden'] = 'true'
