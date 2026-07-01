@@ -100,13 +100,10 @@ function transformBlockquote(
     foldIconProps,
   } = props
 
-  const children = node.children.filter(
-    (child) => !(child.type === 'text' && child.value.trim() === '')
-  )
+  const firstChild = node.children.find((child) => !isBlankText(child))
+  if (!firstChild) return
 
-  if (children.length === 0) return
-
-  const firstParagraph = cloneElement(children[0])
+  const firstParagraph = cloneElement(firstChild)
   if (firstParagraph?.tagName !== 'p') return
   if (firstParagraph.children.length === 0) return
 
@@ -119,6 +116,7 @@ function transformBlockquote(
   const lowerType = match?.groups?.type.toLowerCase()
   if (!lowerType || !(lowerType in callouts || lowerType in aliasMap)) return
 
+  const children = node.children.filter((child) => !isBlankText(child))
   firstParagraph.children = handleBrAfterTitle(firstParagraph.children)
   let newChildren: ElementContent[] = [firstParagraph, ...children.slice(1)]
 
@@ -351,6 +349,10 @@ function text(value: string): Text {
     type: 'text',
     value,
   }
+}
+
+function isBlankText(node: ElementContent): boolean {
+  return node.type === 'text' && node.value.trim() === ''
 }
 
 function cloneElement(node: ElementContent | undefined): Element | undefined {
