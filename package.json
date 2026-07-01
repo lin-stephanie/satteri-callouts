@@ -71,9 +71,9 @@
     "satteri": "^0.9.3",
     "simple-git-hooks": "^2.13.1",
     "type-coverage": "^2.29.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.9",
-    "xo": "^1.2.3"
+    "xo": "^3.0.2"
   },
   "peerDependencies": {
     "satteri": "^0.9.3"
