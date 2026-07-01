@@ -16,19 +16,13 @@ import {
   handleBrAfterTitle,
   findFirstNewline,
   mergeConsecutiveTextNodes,
+  element,
   getProperties,
   getIndicator,
   getFoldIcon,
 } from './utils.js'
 
-import type {
-  Element,
-  ElementContent,
-  Properties,
-  Root,
-  RootContent,
-  Text,
-} from 'hast'
+import type { Element, ElementContent, Root, RootContent, Text } from 'hast'
 import type { RequiredOptions, UserOptions } from './types.js'
 
 /**
@@ -328,19 +322,6 @@ function transformHtmlNode(
   return {
     node: { ...base, children },
     changed,
-  }
-}
-
-function element(
-  tagName: string,
-  properties: Properties,
-  children: ElementContent[]
-): Element {
-  return {
-    type: 'element',
-    tagName,
-    properties,
-    children,
   }
 }
 

@@ -1,5 +1,4 @@
 import { fromHtml } from 'hast-util-from-html'
-import { h } from 'hastscript'
 
 import { docusaurusCallouts } from './themes/docusaurus/config.js'
 import { githubCallouts } from './themes/github/config.js'
@@ -322,6 +321,22 @@ function parseSvgFragment(value: string): Root {
 }
 
 /**
+ * Creates an HAST element.
+ */
+export function element(
+  tagName: string,
+  properties: Properties,
+  children: ElementContent[]
+): Element {
+  return {
+    type: 'element',
+    tagName,
+    properties,
+    children,
+  }
+}
+
+/**
  * Fetches a callout's visual indicator.
  */
 export function getIndicator(
@@ -338,7 +353,7 @@ export function getIndicator(
   const properties = getProperties(props, defaultClassNames.titleIcon)
   properties['aria-hidden'] = 'true'
 
-  return h(tag, properties, indicatorElement)
+  return element(tag, properties, indicatorElement.children as ElementContent[])
 }
 
 /**
@@ -353,5 +368,5 @@ export function getFoldIcon(tag: string, props: Properties | null): Element {
   const properties = getProperties(props, defaultClassNames.foldIcon)
   properties['aria-hidden'] = 'true'
 
-  return h(tag, properties, foldIconElement)
+  return element(tag, properties, foldIconElement.children as ElementContent[])
 }
