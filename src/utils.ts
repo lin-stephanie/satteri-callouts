@@ -1,12 +1,11 @@
 import { fromHtml } from 'hast-util-from-html'
-import { h } from 'hastscript'
 
 import { docusaurusCallouts } from './themes/docusaurus/config.js'
 import { githubCallouts } from './themes/github/config.js'
 import { obsidianCallouts } from './themes/obsidian/config.js'
 import { vitepressCallouts } from './themes/vitepress/config.js'
 
-import type { ElementContent, Element, Text, Properties } from 'hast'
+import type { ElementContent, Element, Text, Properties, Root } from 'hast'
 import type {
   BlockquoteElement,
   CreateProperties,
@@ -41,7 +40,7 @@ export const defaultClassNames = {
  */
 export function createIfNeeded(
   value: CreateProperties | Properties | null,
-  node: BlockquoteElement,
+  node: Readonly<BlockquoteElement>,
   type: string
 ) {
   return typeof value === 'function' ? value(node, type) : value
@@ -92,16 +91,20 @@ export function getConfig(
 
   if (userOptions) {
     const { theme, callouts, aliases } = userOptions
-    if (callouts) userOptions.callouts = convertKeysToLowercase(callouts)
-    if (aliases) userOptions.aliases = convertKeysToLowercase(aliases)
+    const normalizedCallouts = callouts
+      ? convertKeysToLowercase(callouts)
+      : undefined
+    const normalizedAliases = aliases
+      ? convertKeysToLowercase(aliases)
+      : undefined
 
     const initCallouts = theme ? themes[theme] : themes.obsidian
     const mergedCallouts = { ...initCallouts }
-    if (userOptions.callouts) {
-      for (const key of Object.keys(userOptions.callouts)) {
+    if (normalizedCallouts) {
+      for (const key of Object.keys(normalizedCallouts)) {
         mergedCallouts[key] = {
           ...initCallouts[key],
-          ...userOptions.callouts[key],
+          ...normalizedCallouts[key],
         }
       }
     }
@@ -109,7 +112,7 @@ export function getConfig(
     return {
       theme: userOptions.theme ?? defaultOptions.theme,
       callouts: mergedCallouts,
-      aliases: { ...defaultOptions.aliases, ...userOptions.aliases },
+      aliases: { ...defaultOptions.aliases, ...normalizedAliases },
       showIndicator: userOptions.showIndicator ?? defaultOptions.showIndicator,
       tags: {
         ...defaultOptions.tags,
@@ -134,12 +137,11 @@ export function expandCallouts(
 ): Record<string, string> {
   if (Object.keys(aliases).length === 0) return {}
 
-  const expandedCallouts = structuredClone(callouts)
   const aliasMap: Record<string, string> = {}
 
   for (const [key, aliasList] of Object.entries(aliases)) {
     const lowerKey = key.toLowerCase()
-    const originalCallout = expandedCallouts[lowerKey]
+    const originalCallout = callouts[lowerKey]
 
     if (originalCallout) {
       const processedAliases = new Set<string>()
@@ -300,6 +302,75 @@ export function getProperties(
 }
 
 /**
+ * Checks if an element content is a blank text node.
+ */
+export function isBlankText(node: ElementContent): boolean {
+  return node.type === 'text' && node.value.trim() === ''
+}
+
+/**
+ * Clones an element with only its text node children deep-copied.
+ */
+export function cloneElementWithTextChildren(
+  node: ElementContent | undefined
+): Element | undefined {
+  if (node?.type !== 'element') return
+
+  return {
+    ...node,
+    properties: { ...node.properties },
+    children: node.children.map((child) =>
+      child.type === 'text' ? { ...child } : child
+    ),
+  }
+}
+
+/**
+ * Creates a text node.
+ */
+export function text(value: string): Text {
+  return {
+    type: 'text',
+    value,
+  }
+}
+
+/**
+ * Creates an HAST element.
+ */
+export function element(
+  tagName: string,
+  properties: Properties,
+  children: ElementContent[]
+): Element {
+  return {
+    type: 'element',
+    tagName,
+    properties,
+    children,
+  }
+}
+
+/**
+ * Parses an SVG fragment from a string.
+ * Caches the parsed fragment for performance.
+ */
+const svgFragmentCache = new Map<string, Root>()
+function parseSvgFragment(value: string): Root {
+  const cached = svgFragmentCache.get(value)
+  if (cached) return structuredClone(cached)
+
+  const fragment = fromHtml(value, {
+    space: 'svg',
+    fragment: true,
+  })
+
+  svgFragmentCache.set(value, fragment)
+
+  return structuredClone(fragment)
+}
+
+/**
  * Fetches a callout's visual indicator.
  */
 export function getIndicator(
@@ -311,15 +382,12 @@ export function getIndicator(
   const indicator = callouts[type]?.indicator
   if (!indicator) return null
 
-  const indicatorElement = fromHtml(indicator, {
-    space: 'svg',
-    fragment: true,
-  })
+  const indicatorElement = parseSvgFragment(indicator)
 
   const properties = getProperties(props, defaultClassNames.titleIcon)
   properties['aria-hidden'] = 'true'
 
-  return h(tag, properties, indicatorElement)
+  return element(tag, properties, indicatorElement.children as ElementContent[])
 }
 
 /**
@@ -329,13 +397,10 @@ export function getFoldIcon(tag: string, props: Properties | null): Element {
   const icon =
     '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>'
 
-  const foldIconElement = fromHtml(icon, {
-    space: 'svg',
-    fragment: true,
-  })
+  const foldIconElement = parseSvgFragment(icon)
 
   const properties = getProperties(props, defaultClassNames.foldIcon)
   properties['aria-hidden'] = 'true'
 
-  return h(tag, properties, foldIconElement)
+  return element(tag, properties, foldIconElement.children as ElementContent[])
 }

@@ -6,10 +6,10 @@ export type BlockquoteElement = Element & {
 
 /**
  * Create properties for an element within a callout structure,
- * using a `tagName: 'blockquote'` node and the callout type (default or custom).
+ * using the read-only source blockquote node and the callout type.
  */
 export type CreateProperties = (
-  node: BlockquoteElement,
+  node: Readonly<BlockquoteElement>,
   type: string
 ) => Properties | null
 

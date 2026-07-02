@@ -17,18 +17,15 @@ import {
   findFirstNewline,
   mergeConsecutiveTextNodes,
   getProperties,
+  isBlankText,
+  cloneElementWithTextChildren,
+  text,
+  element,
   getIndicator,
   getFoldIcon,
 } from './utils.js'
 
-import type {
-  Element,
-  ElementContent,
-  Properties,
-  Root,
-  RootContent,
-  Text,
-} from 'hast'
+import type { Element, ElementContent, Root, RootContent, Text } from 'hast'
 import type { RequiredOptions, UserOptions } from './types.js'
 
 /**
@@ -41,6 +38,7 @@ import type { RequiredOptions, UserOptions } from './types.js'
  */
 function satteriCallouts(options?: UserOptions): HastPluginDefinition {
   const config = getConfig(options)
+  const aliasMap = expandCallouts(config.callouts, config.aliases)
 
   return defineHastPlugin({
     name: 'satteri-callouts',
@@ -48,12 +46,16 @@ function satteriCallouts(options?: UserOptions): HastPluginDefinition {
     element: {
       filter: ['blockquote'],
       visit(node: Readonly<Element>) {
-        return transformBlockquote(node, config)
+        return transformBlockquote(node, config, aliasMap)
       },
     },
 
     raw(node: Readonly<Extract<HastNode, { type: 'raw' }>>) {
-      const value = transformHtmlFragment(node.value, config)
+      if (!node.value.includes('[!') || !/<blockquote\b/i.test(node.value)) {
+        return
+      }
+
+      const value = transformHtmlFragment(node.value, config, aliasMap)
 
       if (value === node.value) return
 
@@ -74,9 +76,10 @@ function satteriCallouts(options?: UserOptions): HastPluginDefinition {
  */
 function transformBlockquote(
   node: Readonly<Element>,
-  config: RequiredOptions
+  config: RequiredOptions,
+  aliasMap: Record<string, string>
 ): Element | undefined {
-  const { theme, callouts, aliases, showIndicator, tags, props } = config
+  const { theme, callouts, showIndicator, tags, props } = config
   const {
     nonCollapsibleContainerTagName,
     nonCollapsibleTitleTagName,
@@ -94,26 +97,23 @@ function transformBlockquote(
     foldIconProps,
   } = props
 
-  const children = node.children.filter(
-    (child) => !(child.type === 'text' && child.value.trim() === '')
-  )
+  const firstChild = node.children.find((child) => !isBlankText(child))
+  if (!firstChild) return
 
-  if (children.length === 0) return
-
-  const firstParagraph = cloneElement(children[0])
+  const firstParagraph = cloneElementWithTextChildren(firstChild)
   if (firstParagraph?.tagName !== 'p') return
   if (firstParagraph.children.length === 0) return
 
   const firstParagraphChild = firstParagraph.children[0]
   if (firstParagraphChild.type !== 'text') return
 
-  const aliasMap = expandCallouts(callouts, aliases)
   const match = calloutRegex.exec(firstParagraphChild.value)
   calloutRegex.lastIndex = 0
 
   const lowerType = match?.groups?.type.toLowerCase()
   if (!lowerType || !(lowerType in callouts || lowerType in aliasMap)) return
 
+  const children = node.children.filter((child) => !isBlankText(child))
   firstParagraph.children = handleBrAfterTitle(firstParagraph.children)
   let newChildren: ElementContent[] = [firstParagraph, ...children.slice(1)]
 
@@ -182,7 +182,7 @@ function transformBlockquote(
     revisedType
   )
 
-  const newFirstParagraph = cloneElement(newChildren[0])
+  const newFirstParagraph = cloneElementWithTextChildren(newChildren[0])
   if (!newFirstParagraph) return
 
   const firstTextNode = newFirstParagraph.children[0]
@@ -273,12 +273,16 @@ function transformBlockquote(
   )
 }
 
-function transformHtmlFragment(value: string, config: RequiredOptions): string {
+function transformHtmlFragment(
+  value: string,
+  config: RequiredOptions,
+  aliasMap: Record<string, string>
+): string {
   const tree: Root = fromHtml(value, { fragment: true })
   let changed = false
 
   const children = tree.children.map((child) => {
-    const result = transformHtmlNode(child, config)
+    const result = transformHtmlNode(child, config, aliasMap)
     changed ||= result.changed
 
     return result.node
@@ -289,27 +293,30 @@ function transformHtmlFragment(value: string, config: RequiredOptions): string {
 
 function transformHtmlNode(
   node: ElementContent,
-  config: RequiredOptions
+  config: RequiredOptions,
+  aliasMap: Record<string, string>
 ): { node: ElementContent; changed: boolean }
 function transformHtmlNode(
   node: RootContent,
-  config: RequiredOptions
+  config: RequiredOptions,
+  aliasMap: Record<string, string>
 ): { node: RootContent; changed: boolean }
 function transformHtmlNode(
   node: RootContent,
-  config: RequiredOptions
+  config: RequiredOptions,
+  aliasMap: Record<string, string>
 ): { node: RootContent; changed: boolean } {
   if (node.type !== 'element') return { node, changed: false }
 
   const transformed =
     node.tagName === 'blockquote'
-      ? transformBlockquote(node, config)
+      ? transformBlockquote(node, config, aliasMap)
       : undefined
   const base = transformed ?? node
   let changed = Boolean(transformed)
 
   const children = base.children.map((child) => {
-    const result = transformHtmlNode(child, config)
+    const result = transformHtmlNode(child, config, aliasMap)
     changed ||= result.changed
 
     return result.node
@@ -318,38 +325,6 @@ function transformHtmlNode(
   return {
     node: { ...base, children },
     changed,
-  }
-}
-
-function element(
-  tagName: string,
-  properties: Properties,
-  children: ElementContent[]
-): Element {
-  return {
-    type: 'element',
-    tagName,
-    properties,
-    children,
-  }
-}
-
-function text(value: string): Text {
-  return {
-    type: 'text',
-    value,
-  }
-}
-
-function cloneElement(node: ElementContent | undefined): Element | undefined {
-  if (node?.type !== 'element') return
-
-  return {
-    ...node,
-    properties: { ...node.properties },
-    children: node.children.map((child) =>
-      child.type === 'text' ? { ...child } : child
-    ),
   }
 }
 
