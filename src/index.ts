@@ -16,8 +16,11 @@ import {
   handleBrAfterTitle,
   findFirstNewline,
   mergeConsecutiveTextNodes,
-  element,
   getProperties,
+  isBlankText,
+  cloneElementWithTextChildren,
+  text,
+  element,
   getIndicator,
   getFoldIcon,
 } from './utils.js'
@@ -97,7 +100,7 @@ function transformBlockquote(
   const firstChild = node.children.find((child) => !isBlankText(child))
   if (!firstChild) return
 
-  const firstParagraph = cloneElement(firstChild)
+  const firstParagraph = cloneElementWithTextChildren(firstChild)
   if (firstParagraph?.tagName !== 'p') return
   if (firstParagraph.children.length === 0) return
 
@@ -179,7 +182,7 @@ function transformBlockquote(
     revisedType
   )
 
-  const newFirstParagraph = cloneElement(newChildren[0])
+  const newFirstParagraph = cloneElementWithTextChildren(newChildren[0])
   if (!newFirstParagraph) return
 
   const firstTextNode = newFirstParagraph.children[0]
@@ -322,29 +325,6 @@ function transformHtmlNode(
   return {
     node: { ...base, children },
     changed,
-  }
-}
-
-function text(value: string): Text {
-  return {
-    type: 'text',
-    value,
-  }
-}
-
-function isBlankText(node: ElementContent): boolean {
-  return node.type === 'text' && node.value.trim() === ''
-}
-
-function cloneElement(node: ElementContent | undefined): Element | undefined {
-  if (node?.type !== 'element') return
-
-  return {
-    ...node,
-    properties: { ...node.properties },
-    children: node.children.map((child) =>
-      child.type === 'text' ? { ...child } : child
-    ),
   }
 }
 

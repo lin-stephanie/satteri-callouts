@@ -302,22 +302,37 @@ export function getProperties(
 }
 
 /**
- * Parses an SVG fragment from a string.
- * Caches the parsed fragment for performance.
+ * Checks if an element content is a blank text node.
  */
-const svgFragmentCache = new Map<string, Root>()
-function parseSvgFragment(value: string): Root {
-  const cached = svgFragmentCache.get(value)
-  if (cached) return structuredClone(cached)
+export function isBlankText(node: ElementContent): boolean {
+  return node.type === 'text' && node.value.trim() === ''
+}
 
-  const fragment = fromHtml(value, {
-    space: 'svg',
-    fragment: true,
-  })
+/**
+ * Clones an element with only its text node children deep-copied.
+ */
+export function cloneElementWithTextChildren(
+  node: ElementContent | undefined
+): Element | undefined {
+  if (node?.type !== 'element') return
 
-  svgFragmentCache.set(value, fragment)
+  return {
+    ...node,
+    properties: { ...node.properties },
+    children: node.children.map((child) =>
+      child.type === 'text' ? { ...child } : child
+    ),
+  }
+}
 
-  return structuredClone(fragment)
+/**
+ * Creates a text node.
+ */
+export function text(value: string): Text {
+  return {
+    type: 'text',
+    value,
+  }
 }
 
 /**
@@ -334,6 +349,25 @@ export function element(
     properties,
     children,
   }
+}
+
+/**
+ * Parses an SVG fragment from a string.
+ * Caches the parsed fragment for performance.
+ */
+const svgFragmentCache = new Map<string, Root>()
+function parseSvgFragment(value: string): Root {
+  const cached = svgFragmentCache.get(value)
+  if (cached) return structuredClone(cached)
+
+  const fragment = fromHtml(value, {
+    space: 'svg',
+    fragment: true,
+  })
+
+  svgFragmentCache.set(value, fragment)
+
+  return structuredClone(fragment)
 }
 
 /**
