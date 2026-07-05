@@ -10,6 +10,7 @@
     "types": ["node"],
 
     /* Emit */
+    "rootDir": "src",
     "outDir": "dist",
     "declaration": true,
     "declarationMap": false,
