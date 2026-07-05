@@ -72,7 +72,7 @@
     "type-coverage": "^2.29.7",
     "typescript": "^6.0.3",
     "vitest": "^4.1.9",
-    "xo": "^1.2.3"
+    "xo": "^3.0.2"
   },
   "peerDependencies": {
     "satteri": "^0.9.4"
