@@ -112,7 +112,6 @@ jobs:
           --save-dev
           --save-exact
           --ignore-scripts
-          --no-frozen-lockfile
           "satteri@${{ matrix.satteri }}"
 
       - name: Show installed Sätteri version
