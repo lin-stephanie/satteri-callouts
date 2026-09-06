@@ -10,12 +10,8 @@
     "types": ["node"],
 
     /* Emit */
-    "rootDir": "src",
-    "outDir": "dist",
-    "declaration": true,
-    "declarationMap": false,
-    "declarationDir": "dist",
-    "emitDeclarationOnly": false,
+    "rootDir": ".",
+    "noEmit": true,
 
     /* Interop Constraints */
     "forceConsistentCasingInFileNames": true,
@@ -28,5 +24,5 @@
     /* Completeness */
     "skipDefaultLibCheck": false
   },
-  "include": ["src"]
+  "include": ["src/**/*.ts", "test/**/*.ts", "vitest.config.ts"]
 }

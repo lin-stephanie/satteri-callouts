@@ -43,11 +43,11 @@
   ],
   "scripts": {
     "test": "vitest && vitest run --coverage",
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc -p tsconfig.build.json",
     "postbuild": "copyfiles -u 1 'src/**/*.css' dist",
     "check": "publint",
-    "typecheck": "tsc --noEmit -p tsconfig.eslint.json",
-    "typecheck:coverage": "type-coverage --strict --detail --min=100 -p tsconfig.eslint.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "typecheck:coverage": "type-coverage --strict --detail --min=100 -p tsconfig.json",
     "lint": "xo",
     "lint:fix": "xo --fix",
     "prepare": "simple-git-hooks",
@@ -124,7 +124,7 @@
       "languageOptions": {
         "parserOptions": {
           "projectService": false,
-          "project": "./tsconfig.eslint.json"
+          "project": "./tsconfig.json"
         }
       },
       "rules": {
