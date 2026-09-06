@@ -47,7 +47,7 @@
     "postbuild": "copyfiles -u 1 'src/**/*.css' dist",
     "check": "publint",
     "typecheck": "tsc --noEmit -p tsconfig.eslint.json",
-    "typecheck:coverage": "type-coverage --strict --detail --min=100",
+    "typecheck:coverage": "type-coverage --strict --detail --min=100 -p tsconfig.eslint.json",
     "lint": "xo",
     "lint:fix": "xo --fix",
     "prepare": "simple-git-hooks",
@@ -67,7 +67,7 @@
     "prettier": "^3.9.4",
     "publint": "^0.3.21",
     "rimraf": "^6.1.3",
-    "satteri": "^0.9.4",
+    "satteri": "^0.10.5",
     "simple-git-hooks": "^2.13.1",
     "type-coverage": "^2.29.7",
     "typescript": "^6.0.3",
@@ -75,7 +75,7 @@
     "xo": "^1.2.3"
   },
   "peerDependencies": {
-    "satteri": "^0.9.4"
+    "satteri": "^0.9.4 || ^0.10.0"
   },
   "xo": [
     {
